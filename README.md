@@ -129,11 +129,66 @@ Another configuration wizard will appear, this time for Active Directory Domain 
 
 Once the wizard is finished installing, your domain controller will automatically restart. Congratulations, you now have a domain controller with active directory domain services installed!
 
-## Creating Accounts in Active Directory
+## Creating an Admin Account in Active Directory
 
 Restarting the domain controller kicked us out of our remote desktop session, so we'll need to log in again. In order to log in this time, though, we'll need to specify the domain we're logging into along with the user. Use `domain\user` in the username portion of the login along with the same password and you should be able to connect.
 
 ![16  logging in with domain](https://github.com/user-attachments/assets/4883188a-8065-454f-96ad-2eaaa17cfef1)
+
+Once inside, open the Start menu and click "Windows Administrative Tools", then select "Active Directory Users and Computers" from the dropdown menu.
+
+![17  aduc not a duck](https://github.com/user-attachments/assets/2822f50a-f109-4488-90c3-799bb738846c)
+
+Right click your domain name, and create two new organizational units, one called `_EMPLOYEES` and one called `_ADMINS` EXACTLY. We will be using a script later to create random employees and PowerShell will look for those exact names to place the employees in.
+
+💡 Active Directory Domain Services has a bunch of built-in user groups that you can see by clicking the "Users" folder under your domain name. They have all sorts of preconfigured permissions and overlapped levels of access, so we'll be using our own simplified groups, but feel free to explore and read about the default groups to gain insight about Active Directory permissions management.
+
+![18  two new ous](https://github.com/user-attachments/assets/417ad9b4-845a-4c8a-b4ed-919b4d0f6f0f)
+
+Now, we will create an administrator we can roleplay as later. Let's hire Jane Doe again. Create a new user in our admin folder by right clicking "_ADMINS" and selecting **New -> User**. Fill out her information, and set a new password for her. Untick the "User must change password at next logon" box unless you'd like to see what that UI looks like from the user's point of view. 💡 Notice the similarities in the settings between Active Directory and osTicket!
+
+![19  jane doe admin extraordinare](https://github.com/user-attachments/assets/95ba70bb-06a2-4b0f-b92c-db022f7da409)
+
+In order to give Jane a set of permissions that will allow her to perform admin activities on our domain, let's add her to the preconfigured "Domain Admins" user group by doing the following:
+
+1. Right click Jane's user and select "Properties".
+2. Go to "Member of", and click "Add".
+3. Type "domain admins" into the text box and then press Enter. (You can also click "check names" to be sure that what you typed is a valid group. If it is, it will underline itself and correctly capitalize itself.)
+
+![20  3 step jane admin process](https://github.com/user-attachments/assets/97e80409-6fa1-4ae7-9199-39993af31ab1)
+
+Once you're finished, log out of your current session and try logging in as Jane! Remember to use `domain\user` in the username portion of your RDC client!
+
+![21  jane can log in](https://github.com/user-attachments/assets/a05756f1-859d-4d80-a50d-b55e15588bec)
+
+## Joining the Client to the Domain
+
+Our domain controller has active directory installed and has been promoted, and our client is using it as its DNS Server, but our client isn't part of the domain yet. Remote desktop into your client computer with your original user and password you set on it (your domain name won't be recognized if you try to use it, and Jane won't be able to log in).
+
+Once inside, do the following to add the client to the domain:
+
+1. Right click the Windows Icon in the bottom right corner and click on "System".
+2. Click on "Rename this PC (advanced)".
+3. Click "Change" to change the domain the computer belongs to.
+4. Type your domain name into the text box and click "OK".
+
+![22  4 step process to join to domain](https://github.com/user-attachments/assets/18069faf-f738-4496-aa51-f02a571352fb)
+
+The client will then ask for an account's credentials that has permission to join the computer to the domain. Input Jane's credentials, remembering to specify the domain.
+
+![23  jane doe does sysadmin work](https://github.com/user-attachments/assets/4a851eed-c704-405f-a78d-337a898687a5)
+
+A popup will appear behind your other menus welcoming you to the domain!
+
+![24  welcome](https://github.com/user-attachments/assets/5812b356-456d-4c88-8a7d-3d61d7d184ff)
+
+After this, the comptuer will restart automatically to apply the changes. Congratulations on adding a client to your Active Directory Domain! To check on client computers from your domain controller, open "Active Directory Users and Computers" and look in the "Computers" folder under your domain name. You should see your other virtual machine and be able to view properties about it!
+
+![25  client registration](https://github.com/user-attachments/assets/b764ef28-208d-44b3-a1c1-1800a531dee4)
+
+## Allowing "Regular" Employees to Log On to the Client
+
+
 
 
 
