@@ -52,5 +52,72 @@ Save the changes, and then log out of your domain controller's remote desktop.
 
 ## Client Network Settings
 
-By default, the client computer will be "pointing" to Azure's DNS server. We need to change it to "point" towards our domain controller, so that our client resolves domain names with our active directory rules that we'll be setting up later.
+By default, the client computer will be "pointing" to Azure's DNS server. We need to change it to "point" towards our domain controller, so that our client resolves domain names with our active directory rules that we'll be setting up later. Go to your client VM's NIC settings (the green network card icon in Azure's "Network Settings", just like before) but this time, click on "DNS Servers" on the sidebar.
+
+![6  client DNS settings](https://github.com/user-attachments/assets/ccf79eb5-88b8-4835-a359-bd0009c95a6c)
+
+Switch the DNS Server to "Custom" and then put in your domain controller's private IP address.
+
+## Fixing the "Invalid IP Address" Error
+
+When changing the network settings on your client, this error might pop up:
+
+![7  error](https://github.com/user-attachments/assets/e2814fc4-1cd9-4c98-a75d-14296e86762a)
+
+This means that our network settings have not been properly configured. In Azure, search for Network Security Groups and click on the standard version (⚠️ **NOT** classic!). 
+
+![8  newgen network security groups](https://github.com/user-attachments/assets/027d9fcc-0c63-44d6-bb29-5317123d257f)
+
+Click into your client's network security group and select "Inbound security rules" from the "Settings" dropdown menu.
+
+![9  client inbound nsg rules](https://github.com/user-attachments/assets/d99226bd-6b5b-4401-8038-1d0556128439)
+
+Port 53 is where DNS communication between computers happens, so we need to allow any traffic coming in from port 53 and make it the top priority in our network security group. Put `53` into "Destination port ranges" and `290` into "Priority" and then create the rule. 
+
+![10  da rules](https://github.com/user-attachments/assets/f2b4efcd-b557-4b3e-b324-f6282a05b41b)
+
+⚠️ You will need to repeat this process for the outbound rules and your domain controller's network security group rules! Use the same destination port range and priority for each one, but create a total of **FOUR** new rules.
+
+1. Client inbound rule
+2. Client outbound rule
+3. Domain Controller inbound rule
+4. Domain Controller outbound rule
+
+Once you have created all of the new rules, go to your Virtual Machines menu and restart both your client and your domain controller.
+
+![11  restarting](https://github.com/user-attachments/assets/d8e929da-98f0-46f3-8ed5-c995ee71aaf1)
+
+After your virtual machines restart, update the DNS settings again and it will work!
+
+![12  hooray it work](https://github.com/user-attachments/assets/8e007684-4d08-4fdb-8fba-eeef6405ba9f)
+
+Restart your client computer to apply its new network settings and you're finished with the client side!
+
+💡 An extra thing you can do is to remote desktop into your client and run `ipconfig /all` into your powershell. Near the very bottom, you should see that your DNS server is the private IP address of your domain controller!
+
+![13  cool thing](https://github.com/user-attachments/assets/8d53d0d0-aa94-419b-844b-09e51395096a)
+
+## Installing Active Directory onto the Domain Controller
+
+Log into your domain controller with Remote Desktop. An application called "Server Manager" should pop up, but if it doesn't you can always search for/select it in the Start Menu. Within the server manager, click "Add roles and features" to bring up an installation wizard.
+
+![14  summon the wizard](https://github.com/user-attachments/assets/a06c3100-aa38-4382-9ab6-659d480a4625)
+
+Inside the wizard:
+
+1. On the "**Before You Begin**" page, click "Next".
+2. On the "**Installation Type**" page, choose "Role-based or feature-based installation".
+3. On the "**Server Selection**" page, select "Select a server from the server pool" and make sure your domain controller is highlighted.
+4. On the "**Server Roles**" page, click "Active Directory Domain Services" ONLY (and add the features, of course).
+5. On the "**Features**" page, click "Next".
+6. On the "**AD DS**" page, click "Next".
+7. On the "**Confirmation**" page, tick the "Restart the destination server automatically if required" box and then click "Install".
+
+Once Active Directory is finished installing, click the notification flag in the top right corner and select "Promote this server to a domain controller".
+
+![15  promotion](https://github.com/user-attachments/assets/8e83accb-030d-4448-9472-eb5984274c79)
+
+Another menu will appear
+
+
 
