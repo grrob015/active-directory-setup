@@ -117,7 +117,23 @@ Once Active Directory is finished installing, click the notification flag in the
 
 ![15  promotion](https://github.com/user-attachments/assets/8e83accb-030d-4448-9472-eb5984274c79)
 
-Another menu will appear
+Another configuration wizard will appear, this time for Active Directory Domain Services specifically. Inside the wizard:
+
+1. On the "**Deployment Configuration**" page, select "Add a new forest" and specify a domain name. I will be using `bigplasticco.com`.
+2. On the "**Domain Controller Options**" page, set a Directory Services Restore Mode password and leave the other settings default.
+3. On the "**DNS Options**" page, uncheck the "Create DNS delegation" box.
+4. On the "**Additional Options**" page, click "Next".
+5. On the "**Paths**" page, click "Next".
+6. On the "**Review Options**" page, click "Next".
+7. On the "**Prerequisite Check**" page, click "Install".
+
+Once the wizard is finished installing, your domain controller will automatically restart. Congratulations, you now have a domain controller with active directory domain services installed!
+
+## Creating Accounts in Active Directory
+
+Restarting the domain controller kicked us out of our remote desktop session, so we'll need to log in again. In order to log in this time, though, we'll need to specify the domain we're logging into along with the user. Use `domain\user` in the username portion of the login along with the same password and you should be able to connect.
+
+![16  logging in with domain](https://github.com/user-attachments/assets/4883188a-8065-454f-96ad-2eaaa17cfef1)
 
 
 
