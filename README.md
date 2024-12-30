@@ -188,6 +188,34 @@ After this, the comptuer will restart automatically to apply the changes. Congra
 
 ## Allowing "Regular" Employees to Log On to the Client
 
+Remote desktop into your client virtual machine as Jane Doe (we can do that since the client is part of the domain now!). Remember that the username will be `domain\user`!
+
+Once you're logged in, do the following to allow anyone on the domain to access this client remotely:
+
+1. Right click the Windows icon in the bottom left of your screen and click "System".
+2. Select "Remote Desktop" from the sidebar and click "Select users that can remotely access this PC".
+3. Click "Add" in the pop-up menu.
+4. Add "Domain Users" as an object.
+
+![26  domain user remote desktop](https://github.com/user-attachments/assets/ab0ccbef-1a11-4377-9a29-194a0b9d7c9f)
+
+We can now log onto our client as a normal, non-admin user. 💡 Take a look at the "Remote Desktop Users" dialog box (step 3). Notice how it says "...any members of the Administrators group can connect even if they are not listed." That's how Jane got to log in.
+
+## Creating Normal Employees
+
+Now it's time to hire a bunch of new people to have as employees so we can manage their permissions! Log onto your domain controller as Jane Doe and open PowerShell ISE as an administrator (search for it in the Start menu and right click it for the option). Click the arrow next to the word "Script" in the top right corner to open the script pane we'll be using to make our employees. Paste the contents of [this script](https://github.com/joshmadakor1/AD_PS/blob/master/Generate-Names-Create-Users.ps1) into the Script pane, adjust the `$NUMBER_OF_ACCOUNTS_TO_CREATE` variable at the top to something more easily manageable, and then press F5 to run it (The green play button icon at the top middle also runs the script)!
+
+![27  many new employees](https://github.com/user-attachments/assets/4bb095b6-3bc3-425d-917e-0fde3a6ad52f)
+
+Notice how in our Active Directory Users and Computers tool, we can see that we now have ten fresh hires in our system! Everyone's password is `Password1`, so our final step will be to see if we can log into the client computer as a normal employee. Let's get Ken's account, `ken.xibu` (if you followed along, your names will be different!). Your username will be `domain\user`, just like always!
+
+![28  ken's account](https://github.com/user-attachments/assets/a8eb014d-8211-4ffa-a6b4-ace344d3ac03)
+
+Ken shouldn't have any trouble logging in for his first day of work!
+
+This concludes installing and configuring on-premise active directory domain services. I will be showing some examples of business scenarios that might happen and explore different aspects of Active Directory's functionality [here](https://github.com/grrob015/active-directory-examples). Thank you for reading! 🙂
+
+
 
 
 
